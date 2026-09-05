@@ -155,8 +155,18 @@ The CI workflow will display a successful green check once all required files ar
 ![Part 1 CI/CD Build Success](images/ci-build-success.png)
 
 
-## Video Demonstration
+## YouTube Video Demonstration
 
-An unlisted YouTube video explaining the planning decisions and demonstrating the SQL script running live will be added here:
+An unlisted YouTube video will be provided as part of the RaceDay Part 1 submission.
 
-**Video link:** To be added
+The video demonstrates and explains:
+
+* The RaceDay system and its purpose.
+* The Organiser and Participant roles.
+* The Entity Relationship Diagram and database design decisions.
+* The API endpoint plan and the reasoning behind the selected HTTP methods and role-based access.
+* The RaceDay SQL database script being executed in SQL Server Management Studio.
+* The successful creation of the RaceDay database and its tables.
+
+**Video link:** To be added after the video has been uploaded to YouTube as an unlisted video.
+
