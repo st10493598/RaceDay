@@ -79,6 +79,8 @@ The SQL script, located at `docs/RaceDay_Database.sql`, is a working database im
 
 ## Repository Structure
 
+The repository is organised to keep the RaceDay Part 1 documentation and supporting files easy to locate.
+
 ```text
 RaceDay/
 ├── .github/
@@ -86,13 +88,16 @@ RaceDay/
 │       └── part1-ci.yml
 ├── docs/
 │   ├── RaceDay_ERD.pdf
-│   ├── RaceDay_API_Endpoint_Plan.pdf
+│   ├── RaceDay_API_EndPoint_Plan.pdf
 │   └── RaceDay_Database.sql
 ├── images/
 │   └── ci-build-success.png
-├── README.md
-└── .gitignore
+├── .gitignore
+└── README.md
 ```
+
+The `docs` folder contains the main Part 1 planning and database documents. The `images` folder contains the CI/CD evidence screenshot. The `.github/workflows` folder contains the automated GitHub Actions validation workflow.
+
 
 ## Database Setup
 
