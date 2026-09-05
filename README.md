@@ -96,24 +96,33 @@ RaceDay/
 
 ## Database Setup
 
-To set up the RaceDay database on your local SQL Server instance:
+The RaceDay database is implemented using Microsoft SQL Server and is created using the `RaceDay_Database.sql` script.
 
-1. Ensure you have SQL Server and SQL Server Management Studio (SSMS) installed.
-2. Open SSMS and connect to your local SQL Server instance.
-3. Open the `docs/RaceDay_Database.sql` script.
-4. Execute the entire script by pressing F5.
-5. This will create the `RaceDayDB` database, all tables, and populate them with sample data.
-6. Verify the creation by running queries such as:
+The script creates the `RaceDayDB` database and the tables required by the system:
 
-```sql
-SELECT * FROM [User];
-SELECT * FROM Organiser;
-SELECT * FROM Participant;
-SELECT * FROM Event;
-SELECT * FROM Category;
-SELECT * FROM Enrolment;
-SELECT * FROM Result;
-```
+* `User`
+* `Organiser`
+* `Participant`
+* `Event`
+* `Category`
+* `Enrolment`
+* `Result`
+
+The database uses primary keys to uniquely identify records and foreign keys to maintain relationships between related tables. Constraints such as `NOT NULL`, `UNIQUE` and `CHECK` constraints are also used to maintain data integrity.
+
+The SQL script also contains sample data that can be used to demonstrate the database after it has been created.
+
+### Running the Script
+
+To run the database script:
+
+1. Open SQL Server Management Studio (SSMS).
+2. Open `RaceDay_Database.sql`.
+3. Execute the script.
+4. Refresh the Databases folder in Object Explorer.
+5. Open `RaceDayDB` and expand the Tables folder to verify that the required tables have been created.
+
+The complete SQL script is available in the `docs` folder as `RaceDay_Database.sql`.
 
 ## CI/CD
 
