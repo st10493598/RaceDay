@@ -21,7 +21,7 @@ jobs:
         run: test -f docs/RaceDay_ERD.pdf
 
       - name: Check API Endpoint Plan PDF exists
-        run: test -f docs/RaceDay_API_Endpoint_Plan.pdf
+        run: test -f docs/RaceDay_API_EndPoint_Plan.pdf
 
       - name: Check SQL Script exists
         run: test -f docs/RaceDay_Database.sql
