@@ -3,7 +3,27 @@
 -- Part 1 - Database Creation Script
 -- ============================================
 
--- Create the RaceDay Database
+-- ============================================
+-- RESET DATABASE IF IT ALREADY EXISTS
+-- ============================================
+
+USE master;
+GO
+
+IF DB_ID('RaceDayDB') IS NOT NULL
+BEGIN
+    ALTER DATABASE RaceDayDB
+    SET SINGLE_USER
+    WITH ROLLBACK IMMEDIATE;
+
+    DROP DATABASE RaceDayDB;
+END;
+GO
+
+-- ============================================
+-- CREATE THE RACE DAY DATABASE
+-- ============================================
+
 CREATE DATABASE RaceDayDB;
 GO
 
@@ -13,6 +33,7 @@ GO
 -- ============================================
 -- 1. USER TABLE
 -- ============================================
+
 CREATE TABLE [User] (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
     Email NVARCHAR(255) UNIQUE NOT NULL,
@@ -28,6 +49,7 @@ GO
 -- ============================================
 -- 2. ORGANISER TABLE
 -- ============================================
+
 CREATE TABLE Organiser (
     OrganiserID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT UNIQUE NOT NULL,
@@ -43,6 +65,7 @@ GO
 -- ============================================
 -- 3. PARTICIPANT TABLE
 -- ============================================
+
 CREATE TABLE Participant (
     ParticipantID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT UNIQUE NOT NULL,
@@ -60,6 +83,7 @@ GO
 -- ============================================
 -- 4. EVENT TABLE
 -- ============================================
+
 CREATE TABLE Event (
     EventID INT IDENTITY(1,1) PRIMARY KEY,
     OrganiserID INT NOT NULL,
@@ -85,6 +109,7 @@ GO
 -- ============================================
 -- 5. CATEGORY TABLE
 -- ============================================
+
 CREATE TABLE Category (
     CategoryID INT IDENTITY(1,1) PRIMARY KEY,
     EventID INT NOT NULL,
@@ -104,6 +129,7 @@ GO
 -- ============================================
 -- 6. ENROLMENT TABLE
 -- ============================================
+
 CREATE TABLE Enrolment (
     EnrolmentID INT IDENTITY(1,1) PRIMARY KEY,
     ParticipantID INT NOT NULL,
@@ -134,6 +160,7 @@ GO
 -- ============================================
 -- 7. RESULT TABLE
 -- ============================================
+
 CREATE TABLE Result (
     ResultID INT IDENTITY(1,1) PRIMARY KEY,
     EnrolmentID INT UNIQUE NOT NULL,
