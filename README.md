@@ -177,5 +177,5 @@ The video demonstrates and explains:
 * The RaceDay SQL database script being executed in SQL Server Management Studio.
 * The successful creation of the RaceDay database and its tables.
 
-**Video link:** To be added after the video has been uploaded to YouTube as an unlisted video.
+**Video link:** https://youtu.be/rmHYEBhV3dM
 
