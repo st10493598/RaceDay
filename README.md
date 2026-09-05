@@ -14,22 +14,16 @@ The system is planned around a relational database and a RESTful API. The databa
 
 ### Organiser
 
-Organisers are the creators and administrators of events. They have the following key responsibilities:
-
-* Create, edit, and delete their own events
-* Create and manage categories (age groups, gender groups) for their events
-* View all participants enrolled in their events
-* Capture and update participant finish times and positions for their events
+The Organiser is responsible for managing race events within the RaceDay system. An Organiser can create new events, update event information, delete events when necessary and create and manage event categories. Organisers can also view participant enrolments for their events and record or update race results.
 
 ### Participant
 
-Participants are the athletes who sign up for events. They can perform the following actions:
+The Participant uses the system to discover and participate in race events. Participants can view available events and their details, enrol in an event under a selected category, manage their enrolments and view their results.
 
-* Create a profile and log in to the system
-* Browse and view details of all available events
-* Enrol for events and select a specific category to compete in
-* View their own enrolment history
-* View their own race results and performance history
+### Role-Based Access
+
+The system uses role-based access control to ensure that users can only perform actions appropriate to their role. Organiser-specific operations, such as creating events and recording results, require an Organiser role. Participant-specific operations, such as enrolling in events, require a Participant role.
+
 
 ## Part 1 Deliverables
 
