@@ -48,9 +48,25 @@ Primary keys uniquely identify records, while foreign keys maintain referential 
 The complete ERD is available in the `docs` folder as `RaceDay_ERD.pdf`.
 
 
-### API Endpoint Plan
+## API Endpoint Plan
 
-The API Endpoint Plan, located at `docs/RaceDay_API_Endpoint_Plan.pdf`, outlines the future RESTful API. It details each endpoint's HTTP method, route, description, required role, request body, and expected responses. This plan ensures that the API will support all required client-side functionality.
+The RaceDay API is planned using RESTful principles to provide clear and consistent communication between the client application and the database.
+
+The endpoint plan uses HTTP methods according to the operation being performed:
+
+* **POST** is used to create resources, such as registering users, creating events, creating categories, enrolling participants and recording results.
+* **GET** is used to retrieve information, such as event details, categories, enrolments and results.
+* **PUT** is used to update existing resources, such as user profiles, events, categories, enrolments and results.
+* **DELETE** is used to remove resources such as events, categories and enrolments.
+
+The endpoint plan also applies role-based access control. Public authentication endpoints do not require a role, while protected endpoints require an authenticated user and, where appropriate, a specific Organiser or Participant role.
+
+The planned API also uses standard HTTP response codes. Successful requests can return `200 OK`, while newly created resources return `201 Created`. Invalid requests can return `400 Bad Request`, unauthorised requests can return `401 Unauthorized`, forbidden operations can return `403 Forbidden`, and requests for resources that do not exist can return `404 Not Found`.
+
+### API Endpoint Document
+
+The complete API endpoint plan is available in the `docs` folder as `RaceDay_API_EndPoint_Plan.pdf`.
+
 
 ### SQL Database Script
 
