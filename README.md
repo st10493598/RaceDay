@@ -105,6 +105,10 @@ The workflow ensures that:
 ### Successful CI Build
 
 The CI workflow will display a successful green check once all required files are present.
+### Successful CI Build
+
+![Part 1 CI/CD Build Success](images/ci-build-success.png)
+
 
 ## Video Demonstration
 
