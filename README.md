@@ -29,9 +29,24 @@ The system uses role-based access control to ensure that users can only perform 
 
 This repository contains the foundational planning and design work for the RaceDay system.
 
-### Entity Relationship Diagram (ERD)
+## Entity Relationship Diagram (ERD)
 
-The ERD, located at `docs/RaceDay_ERD.pdf`, defines the core data structure for RaceDay. It identifies the necessary entities (User, Organiser, Participant, Event, Category, Enrolment, Result), their attributes, primary and foreign keys, and the relationships, including cardinality, between them. This document serves as the blueprint for the database design.
+The RaceDay ERD defines the structure of the relational database and shows how the main entities are connected.
+
+The `User` entity stores the common details of system users and identifies whether the user is an Organiser or Participant. Separate Organiser and Participant entities allow role-specific information to be stored while maintaining a relationship with the main User record.
+
+An Organiser can manage multiple Events, while each Event belongs to one Organiser. An Event can contain multiple Categories, allowing participants to enter different categories within the same event.
+
+The Enrolment entity connects Participants with Events and Categories. This represents a participant entering a specific category of an event and allows the system to keep track of enrolment status and date.
+
+The Result entity is linked to an Enrolment. An enrolment can have zero or one result because a result may not exist until the participant completes the event or the organiser records the outcome.
+
+Primary keys uniquely identify records, while foreign keys maintain referential integrity between related entities. This structure reduces unnecessary duplication and provides a clear foundation for implementing the RaceDay database.
+
+### ERD Document
+
+The complete ERD is available in the `docs` folder as `RaceDay_ERD.pdf`.
+
 
 ### API Endpoint Plan
 
