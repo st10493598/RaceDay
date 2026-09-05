@@ -1,6 +1,15 @@
 # RaceDay Event Management System
 
 
+## Project Overview
+
+RaceDay Part 1 focuses on planning the foundation of the RaceDay event management system before application development begins. The planning process consists of three main components: the database design, the API endpoint plan and the repository documentation.
+
+The ERD defines the entities, attributes, primary keys, foreign keys and relationships required to support the system. The API endpoint plan defines how clients will interact with the system through RESTful endpoints and role-based access. The SQL database script provides the implementation of the planned relational database in Microsoft SQL Server.
+
+Together, these planning documents provide a structured foundation for developing the RaceDay system in later parts of the project.
+
+
 ## System Description
 
 RaceDay is a web-based event management system designed to support the planning and management of running, walking and cycling events. The system provides separate functionality for Organisers and Participants.
