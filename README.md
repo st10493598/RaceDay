@@ -1,6 +1,7 @@
 # RaceDay Event Management System
 
 
+
 ## Project Overview
 
 RaceDay Part 1 focuses on planning the foundation of the RaceDay event management system before application development begins. The planning process consists of three main components: the database design, the API endpoint plan and the repository documentation.
@@ -10,6 +11,7 @@ The ERD defines the entities, attributes, primary keys, foreign keys and relatio
 Together, these planning documents provide a structured foundation for developing the RaceDay system in later parts of the project.
 
 
+
 ## System Description
 
 RaceDay is a web-based event management system designed to support the planning and management of running, walking and cycling events. The system provides separate functionality for Organisers and Participants.
@@ -17,6 +19,7 @@ RaceDay is a web-based event management system designed to support the planning 
 Organisers can create and manage events, define event categories, view participant enrolments and record race results. Participants can browse available events, view event details, enrol in events, manage their enrolments and view their results.
 
 The system is planned around a relational database and a RESTful API. The database stores users, organisers, participants, events, categories, enrolments and results while maintaining relationships between these entities through primary and foreign keys. The API endpoint plan defines how users and the system will interact with these resources securely according to their assigned roles.
+
 
 
 ## User Roles
@@ -32,6 +35,7 @@ The Participant uses the system to discover and participate in race events. Part
 ### Role-Based Access
 
 The system uses role-based access control to ensure that users can only perform actions appropriate to their role. Organiser-specific operations, such as creating events and recording results, require an Organiser role. Participant-specific operations, such as enrolling in events, require a Participant role.
+
 
 
 ## Part 1 Deliverables
@@ -54,7 +58,8 @@ Primary keys uniquely identify records, while foreign keys maintain referential 
 
 ### ERD Document
 
-The complete ERD is available in the `docs` folder as `RaceDay_ERD.pdf`.
+The complete ERD is available in the `docs` folder as `RaceDay\_ERD.pdf`.
+
 
 
 ## API Endpoint Plan
@@ -74,12 +79,13 @@ The planned API also uses standard HTTP response codes. Successful requests can 
 
 ### API Endpoint Document
 
-The complete API endpoint plan is available in the `docs` folder as `RaceDay_API_EndPoint_Plan.pdf`.
+The complete API endpoint plan is available in the `docs` folder as `RaceDay\_API\_EndPoint\_Plan.pdf`.
+
 
 
 ### SQL Database Script
 
-The SQL script, located at `docs/RaceDay_Database.sql`, is a working database implementation based on the ERD. It includes:
+The SQL script, located at `docs/RaceDay\_Database.sql`, is a working database implementation based on the ERD. It includes:
 
 * CREATE TABLE statements for all 7 entities
 * Primary key, foreign key, and other constraints
@@ -96,9 +102,9 @@ RaceDay/
 │   └── workflows/
 │       └── part1-ci.yml
 ├── docs/
-│   ├── RaceDay_ERD.pdf
-│   ├── RaceDay_API_EndPoint_Plan.pdf
-│   └── RaceDay_Database.sql
+│   ├── RaceDay\_ERD.pdf
+│   ├── RaceDay\_API\_EndPoint\_Plan.pdf
+│   └── RaceDay\_Database.sql
 ├── images/
 │   └── ci-build-success.png
 ├── .gitignore
@@ -108,9 +114,10 @@ RaceDay/
 The `docs` folder contains the main Part 1 planning and database documents. The `images` folder contains the CI/CD evidence screenshot. The `.github/workflows` folder contains the automated GitHub Actions validation workflow.
 
 
+
 ## Database Setup
 
-The RaceDay database is implemented using Microsoft SQL Server and is created using the `RaceDay_Database.sql` script.
+The RaceDay database is implemented using Microsoft SQL Server and is created using the `RaceDay\_Database.sql` script.
 
 The script creates the `RaceDayDB` database and the tables required by the system:
 
@@ -131,12 +138,12 @@ The SQL script also contains sample data that can be used to demonstrate the dat
 To run the database script:
 
 1. Open SQL Server Management Studio (SSMS).
-2. Open `RaceDay_Database.sql`.
+2. Open `RaceDay\_Database.sql`.
 3. Execute the script.
 4. Refresh the Databases folder in Object Explorer.
 5. Open `RaceDayDB` and expand the Tables folder to verify that the required tables have been created.
 
-The complete SQL script is available in the `docs` folder as `RaceDay_Database.sql`.
+The complete SQL script is available in the `docs` folder as `RaceDay\_Database.sql`.
 
 ## CI/CD
 
@@ -151,17 +158,19 @@ This repository uses GitHub Actions for Continuous Integration (CI) to validate 
 The workflow ensures that:
 
 * The `docs` folder exists
-* `RaceDay_ERD.pdf` exists
-* `RaceDay_API_Endpoint_Plan.pdf` exists
-* `RaceDay_Database.sql` exists
+* `RaceDay\_ERD.pdf` exists
+* `RaceDay\_API\_Endpoint\_Plan.pdf` exists
+* `RaceDay\_Database.sql` exists
 * `README.md` exists
 
 ### Successful CI Build
 
 The CI workflow will display a successful green check once all required files are present.
+
 ### Successful CI Build
 
-![Part 1 CI/CD Build Success](images/ci-build-success.png)
+!\[Part 1 CI/CD Build Success](images/ci-build-success.png)
+
 
 
 ## YouTube Video Demonstration
@@ -178,4 +187,72 @@ The video demonstrates and explains:
 * The successful creation of the RaceDay database and its tables.
 
 **Video link:** https://youtu.be/rmHYEBhV3dM
+
+
+
+
+
+
+
+
+
+
+
+\---
+
+
+
+\## Part 2 - RESTful API Development
+
+
+
+Part 2 contains the fully functional ASP.NET Core Web API that powers the RaceDay system. It implements all endpoints from the Part 1 plan, with authentication, role-based access, and unit tests.
+
+
+
+\### Features
+
+\- \*\*ASP.NET Core Web API\*\* in C#
+
+\- \*\*Entity Framework Core (Code-First)\*\* connected to SQL Server
+
+\- \*\*Session-based Authentication\*\* for both Organiser and Participant roles
+
+\- \*\*Passwords hashed with BCrypt\*\* (never stored as plain text)
+
+\- \*\*Swagger UI\*\* for live testing of all endpoints
+
+\- \*\*18 Unit Tests\*\* covering authentication, event management, and enrolments
+
+
+
+\### How To Run The API
+
+1\. Open `Part 2/RaceDay.API.slnx` in Visual Studio.
+
+2\. Make sure SQL Server is running and the `RaceDayDB` database exists.
+
+3\. Press \*\*F5\*\* to run the API.
+
+4\. Swagger UI opens at `https://localhost:7019/swagger`.
+
+
+
+\### How To Run The Tests
+
+1\. In Visual Studio, open \*\*Test → Test Explorer\*\*.
+
+2\. Click \*\*Run All\*\* to run all 18 tests.
+
+3\. All tests should pass locally and via GitHub Actions CI/CD.
+
+
+
+\### Part 2 CI/CD
+
+The `.github/workflows/part2-ci.yml` workflow builds the API project and runs all unit tests on every push to the `Part 2/` folder.
+
+
+
+!\[Part 2 CI/CD Build Success](images/part2-ci-success.png)
 
