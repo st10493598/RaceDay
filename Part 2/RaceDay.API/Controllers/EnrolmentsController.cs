@@ -18,7 +18,6 @@ namespace RaceDay.API.Controllers
         }
 
         // POST: api/events/{eventId}/enrolments
-        // Participant only - enrols in an event by selecting a category
         [HttpPost("events/{eventId}/enrolments")]
         public async Task<IActionResult> CreateEnrolment(int eventId, [FromBody] EnrolmentCreateDto dto)
         {
@@ -40,12 +39,12 @@ namespace RaceDay.API.Controllers
             if (participant == null)
                 return NotFound(new { message = "Participant profile not found." });
 
-            // Check the event exists
-            var evt = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
+            var evt = await _context.Events
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
+
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
 
-            // Check the category exists and belongs to the event
             var category = await _context.Categories
                 .FirstOrDefaultAsync(c => c.CategoryID == dto.CategoryID);
 
@@ -55,7 +54,6 @@ namespace RaceDay.API.Controllers
             if (category.EventID != eventId)
                 return BadRequest(new { message = "This category does not belong to the selected event." });
 
-            // Check if already enrolled in this event
             var existing = await _context.Enrolments
                 .FirstOrDefaultAsync(e => e.ParticipantID == participant.ParticipantID
                                        && e.EventID == eventId);
@@ -85,7 +83,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/enrolments
-        // Participant only - view own enrolments
         [HttpGet("enrolments")]
         public async Task<IActionResult> GetMyEnrolments()
         {
@@ -99,12 +96,14 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, new { message = "Only Participants can view their enrolments." });
 
             var participant = await _context.Participants
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.UserID == userId.Value);
 
             if (participant == null)
                 return NotFound(new { message = "Participant profile not found." });
 
             var enrolments = await _context.Enrolments
+                .AsNoTracking()
                 .Where(e => e.ParticipantID == participant.ParticipantID)
                 .Include(e => e.Event)
                 .Include(e => e.Category)
@@ -125,7 +124,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/events/{eventId}/enrolments
-        // Organiser only - view all enrolments for their event
         [HttpGet("events/{eventId}/enrolments")]
         public async Task<IActionResult> GetEventEnrolments(int eventId)
         {
@@ -139,12 +137,15 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, new { message = "Only Organisers can view event enrolments." });
 
             var organiser = await _context.Organisers
+                .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.UserID == userId.Value);
 
             if (organiser == null)
                 return NotFound(new { message = "Organiser profile not found." });
 
-            var evt = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
+            var evt = await _context.Events
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
 
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
@@ -153,6 +154,7 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, new { message = "You can only view enrolments for your own events." });
 
             var enrolments = await _context.Enrolments
+                .AsNoTracking()
                 .Where(e => e.EventID == eventId)
                 .Include(e => e.Participant)
                     .ThenInclude(p => p!.User)
@@ -178,7 +180,6 @@ namespace RaceDay.API.Controllers
         }
 
         // DELETE: api/enrolments/{id}
-        // Participant only - cancel their own enrolment
         [HttpDelete("enrolments/{id}")]
         public async Task<IActionResult> CancelEnrolment(int id)
         {
