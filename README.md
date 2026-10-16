@@ -137,7 +137,7 @@ Tests can be run in Visual Studio using **Test Explorer** by selecting **Run All
 
 Watch my RaceDay Part 2 REST API demonstration:
 
-[Watch the RaceDay Part 2 Presentation on YouTube](https://youtu.be/wxo49rCVK84)
+[Watch the RaceDay Part 2 Presentation on YouTube](https://youtu.be/uLAiOFfWAsQ)
 
 This video demonstrates the RaceDay project structure, data models, controllers, database integration, Swagger endpoints, and unit testing.
 
