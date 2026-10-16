@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
@@ -6,18 +6,36 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    /// <summary>
+    /// Manages race results. Organisers can capture and update results for their own events.
+    /// Participants can view their own results.
+    /// </summary>
     [Route("api")]
     [ApiController]
     public class ResultsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initialises the controller with the application database context.
+        /// </summary>
+        /// <param name="context">The database context used to access race results.</param>
         public ResultsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // POST: api/events/{eventId}/results
+        /// <summary>
+        /// Captures a result for an enrolment. Only the owning Organiser can do this.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <param name="dto">The result details including finish time and position.</param>
+        /// <returns>
+        /// 201 Created if successful, 400 Bad Request for invalid data,
+        /// 401 Unauthorized if not logged in, 403 Forbidden if the organiser does not own the event,
+        /// 404 Not Found if the organiser, event, or enrolment does not exist,
+        /// or 409 Conflict if a result already exists.
+        /// </returns>
         [HttpPost("events/{eventId}/results")]
         public async Task<IActionResult> CreateResult(int eventId, [FromBody] ResultCreateDto dto)
         {
@@ -85,7 +103,16 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // PUT: api/results/{id}
+        /// <summary>
+        /// Updates an existing result. Only the owning Organiser can update it.
+        /// </summary>
+        /// <param name="id">The result ID.</param>
+        /// <param name="dto">The updated result details.</param>
+        /// <returns>
+        /// 200 OK if updated, 400 Bad Request for invalid data,
+        /// 401 Unauthorized if not logged in, 403 Forbidden if the organiser does not own the event,
+        /// or 404 Not Found if the organiser profile or result does not exist.
+        /// </returns>
         [HttpPut("results/{id}")]
         public async Task<IActionResult> UpdateResult(int id, [FromBody] ResultUpdateDto dto)
         {
@@ -130,7 +157,14 @@ namespace RaceDay.API.Controllers
             return Ok(new { message = "Result updated successfully." });
         }
 
-        // GET: api/events/{eventId}/results
+        /// <summary>
+        /// Returns all results for a specific event in leaderboard order.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <returns>
+        /// 200 OK with a list of results ordered by finish position,
+        /// 401 Unauthorized if not logged in, or 404 Not Found if the event does not exist.
+        /// </returns>
         [HttpGet("events/{eventId}/results")]
         public async Task<IActionResult> GetEventResults(int eventId)
         {
@@ -177,7 +211,15 @@ namespace RaceDay.API.Controllers
             return Ok(results);
         }
 
-        // GET: api/enrolments/{enrolmentId}/result
+        /// <summary>
+        /// Returns the current Participant's own result for a specific enrolment.
+        /// </summary>
+        /// <param name="enrolmentId">The enrolment ID.</param>
+        /// <returns>
+        /// 200 OK with the result, 401 Unauthorized if not logged in,
+        /// 403 Forbidden if the enrolment belongs to another participant,
+        /// or 404 Not Found if the participant profile, enrolment, or result does not exist.
+        /// </returns>
         [HttpGet("enrolments/{enrolmentId}/result")]
         public async Task<IActionResult> GetMyResult(int enrolmentId)
         {
