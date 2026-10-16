@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
@@ -20,21 +20,25 @@ namespace RaceDay.API.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            // Check if the user is logged in (session has UserID)
             var userId = HttpContext.Session.GetInt32("UserID");
+
             if (userId == null)
-                return Unauthorized(new { message = "You must be logged in to view your profile." });
+                return Unauthorized(new
+                {
+                    message = "You must be logged in to view your profile."
+                });
 
             var user = await _context.Users
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.UserID == userId.Value);
 
             if (user == null)
                 return NotFound(new { message = "User not found." });
 
-            // Build the response based on role
             if (user.Role == "Organiser")
             {
                 var organiser = await _context.Organisers
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(o => o.UserID == userId.Value);
 
                 return Ok(new
@@ -47,9 +51,10 @@ namespace RaceDay.API.Controllers
                     organisationName = organiser?.OrganisationName
                 });
             }
-            else
+            else if (user.Role == "Participant")
             {
                 var participant = await _context.Participants
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.UserID == userId.Value);
 
                 return Ok(new
@@ -64,18 +69,28 @@ namespace RaceDay.API.Controllers
                     contactNumber = participant?.ContactNumber
                 });
             }
+
+            return BadRequest(new
+            {
+                message = "Invalid user role."
+            });
         }
 
         // PUT: api/users/profile
         [HttpPut("profile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] ProfileUpdateDto dto)
+        public async Task<IActionResult> UpdateProfile(
+            [FromBody] ProfileUpdateDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var userId = HttpContext.Session.GetInt32("UserID");
+
             if (userId == null)
-                return Unauthorized(new { message = "You must be logged in to update your profile." });
+                return Unauthorized(new
+                {
+                    message = "You must be logged in to update your profile."
+                });
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.UserID == userId.Value);
@@ -83,11 +98,9 @@ namespace RaceDay.API.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found." });
 
-            // Update the base user details
             user.FirstName = dto.FirstName;
             user.LastName = dto.LastName;
 
-            // Update role-specific details
             if (user.Role == "Participant")
             {
                 var participant = await _context.Participants
@@ -103,7 +116,10 @@ namespace RaceDay.API.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Profile updated successfully." });
+            return Ok(new
+            {
+                message = "Profile updated successfully."
+            });
         }
     }
 }
