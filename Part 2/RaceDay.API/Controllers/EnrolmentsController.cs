@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
@@ -6,18 +6,36 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    /// <summary>
+    /// Manages event enrolments. Participants can enrol in events and view their own enrolments.
+    /// Organisers can view enrolments for their own events.
+    /// </summary>
     [Route("api")]
     [ApiController]
     public class EnrolmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initialises the controller with the application database context.
+        /// </summary>
+        /// <param name="context">The database context used to access enrolment data.</param>
         public EnrolmentsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // POST: api/events/{eventId}/enrolments
+        /// <summary>
+        /// Enrols the logged-in Participant in a specific event by selecting a category.
+        /// </summary>
+        /// <param name="eventId">The ID of the event to enrol in.</param>
+        /// <param name="dto">The selected category ID.</param>
+        /// <returns>
+        /// 201 Created if successful, 400 Bad Request for invalid data,
+        /// 401 Unauthorized if not logged in, 403 Forbidden for an incorrect role,
+        /// 404 Not Found if the participant, event, or category does not exist,
+        /// or 409 Conflict if already enrolled.
+        /// </returns>
         [HttpPost("events/{eventId}/enrolments")]
         public async Task<IActionResult> CreateEnrolment(int eventId, [FromBody] EnrolmentCreateDto dto)
         {
@@ -82,7 +100,14 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // GET: api/enrolments
+        /// <summary>
+        /// Returns the enrolment history of the currently logged-in Participant.
+        /// </summary>
+        /// <returns>
+        /// 200 OK with a list of the participant's enrolments,
+        /// 401 Unauthorized if not logged in, 403 Forbidden for an incorrect role,
+        /// or 404 Not Found if the participant profile does not exist.
+        /// </returns>
         [HttpGet("enrolments")]
         public async Task<IActionResult> GetMyEnrolments()
         {
@@ -123,7 +148,16 @@ namespace RaceDay.API.Controllers
             return Ok(enrolments);
         }
 
-        // GET: api/events/{eventId}/enrolments
+        /// <summary>
+        /// Returns all enrolments for a specific event. Only the owning Organiser can view this.
+        /// </summary>
+        /// <param name="eventId">The ID of the event.</param>
+        /// <returns>
+        /// 200 OK with a list of enrolled participants,
+        /// 401 Unauthorized if not logged in, 403 Forbidden if the user is not
+        /// the event's owning Organiser, or 404 Not Found if the organiser profile
+        /// or event does not exist.
+        /// </returns>
         [HttpGet("events/{eventId}/enrolments")]
         public async Task<IActionResult> GetEventEnrolments(int eventId)
         {
@@ -179,7 +213,15 @@ namespace RaceDay.API.Controllers
             return Ok(enrolments);
         }
 
-        // DELETE: api/enrolments/{id}
+        /// <summary>
+        /// Cancels an enrolment. Participants can only cancel their own enrolments.
+        /// </summary>
+        /// <param name="id">The enrolment ID to cancel.</param>
+        /// <returns>
+        /// 204 No Content on success, 401 Unauthorized if not logged in,
+        /// 403 Forbidden if attempting to cancel another participant's enrolment,
+        /// or 404 Not Found if the participant profile or enrolment does not exist.
+        /// </returns>
         [HttpDelete("enrolments/{id}")]
         public async Task<IActionResult> CancelEnrolment(int id)
         {
