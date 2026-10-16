@@ -18,7 +18,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/events/{eventId}/categories
-        // Any authenticated user can view categories of an event
         [HttpGet("events/{eventId}/categories")]
         public async Task<IActionResult> GetCategoriesForEvent(int eventId)
         {
@@ -26,12 +25,15 @@ namespace RaceDay.API.Controllers
             if (userId == null)
                 return Unauthorized(new { message = "You must be logged in to view categories." });
 
-            // Check the event exists
-            var evt = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
+            var evt = await _context.Events
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
+
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
 
             var categories = await _context.Categories
+                .AsNoTracking()
                 .Where(c => c.EventID == eventId)
                 .Select(c => new
                 {
@@ -46,7 +48,6 @@ namespace RaceDay.API.Controllers
         }
 
         // POST: api/events/{eventId}/categories
-        // Organiser only - must own the event
         [HttpPost("events/{eventId}/categories")]
         public async Task<IActionResult> CreateCategory(int eventId, [FromBody] CategoryCreateDto dto)
         {
@@ -68,7 +69,8 @@ namespace RaceDay.API.Controllers
             if (organiser == null)
                 return NotFound(new { message = "Organiser profile not found." });
 
-            var evt = await _context.Events.FirstOrDefaultAsync(e => e.EventID == eventId);
+            var evt = await _context.Events
+                .FirstOrDefaultAsync(e => e.EventID == eventId);
 
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
@@ -95,7 +97,6 @@ namespace RaceDay.API.Controllers
         }
 
         // PUT: api/categories/{id}
-        // Organiser only - must own the parent event
         [HttpPut("categories/{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryUpdateDto dto)
         {
@@ -124,7 +125,6 @@ namespace RaceDay.API.Controllers
             if (category == null)
                 return NotFound(new { message = "Category not found." });
 
-            // Check the organiser owns the event this category belongs to
             if (category.Event == null || category.Event.OrganiserID != organiser.OrganiserID)
                 return StatusCode(403, new { message = "You can only update categories for your own events." });
 
@@ -137,7 +137,6 @@ namespace RaceDay.API.Controllers
         }
 
         // DELETE: api/categories/{id}
-        // Organiser only - must own the parent event
         [HttpDelete("categories/{id}")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
