@@ -6,6 +6,10 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    /// <summary>
+    /// Manages RaceDay events. Organisers can create, update, and delete their own events.
+    /// All authenticated users can view events.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class EventsController : ControllerBase
@@ -17,7 +21,10 @@ namespace RaceDay.API.Controllers
             _context = context;
         }
 
-        // GET: api/events
+        /// <summary>
+        /// Returns a list of all RaceDay events.
+        /// </summary>
+        /// <returns>200 OK with a list of events, or 401 Unauthorized if not logged in.</returns>
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
@@ -45,7 +52,11 @@ namespace RaceDay.API.Controllers
             return Ok(events);
         }
 
-        // GET: api/events/{id}
+        /// <summary>
+        /// Returns the full details of a specific event.
+        /// </summary>
+        /// <param name="id">The ID of the event to retrieve.</param>
+        /// <returns>200 OK with event details, 404 Not Found, or 401 Unauthorized.</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEventById(int id)
         {
@@ -75,7 +86,11 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // POST: api/events
+        /// <summary>
+        /// Creates a new RaceDay event. Only Organisers can perform this action.
+        /// </summary>
+        /// <param name="dto">The event details.</param>
+        /// <returns>201 Created with the new event ID, 403 Forbidden for Participants, or 401 Unauthorized.</returns>
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] EventCreateDto dto)
         {
@@ -120,7 +135,12 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // PUT: api/events/{id}
+        /// <summary>
+        /// Updates an existing event. Only the Organiser who created it can update it.
+        /// </summary>
+        /// <param name="id">The ID of the event to update.</param>
+        /// <param name="dto">The updated event details.</param>
+        /// <returns>200 OK, 403 Forbidden if not the owner, or 404 Not Found.</returns>
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] EventUpdateDto dto)
         {
@@ -163,7 +183,11 @@ namespace RaceDay.API.Controllers
             return Ok(new { message = "Event updated successfully." });
         }
 
-        // DELETE: api/events/{id}
+        /// <summary>
+        /// Deletes an event. Only the Organiser who created it can delete it.
+        /// </summary>
+        /// <param name="id">The ID of the event to delete.</param>
+        /// <returns>204 No Content on success, 403 Forbidden if not the owner, or 404 Not Found.</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
