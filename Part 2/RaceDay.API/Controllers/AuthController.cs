@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
@@ -6,6 +6,9 @@ using RaceDay.API.Models;
 
 namespace RaceDay.API.Controllers
 {
+    /// <summary>
+    /// Handles user authentication and registration for the RaceDay system.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -17,24 +20,28 @@ namespace RaceDay.API.Controllers
             _context = context;
         }
 
-        // POST: api/auth/register
+        /// <summary>
+        /// Registers a new user (Organiser or Participant) with their personal details.
+        /// </summary>
+        /// <remarks>
+        /// The password is hashed using BCrypt before storage. A role-specific profile is created automatically.
+        /// </remarks>
+        /// <param name="dto">Registration details including email, password, name, and role.</param>
+        /// <returns>201 Created with the new user's ID and role, or an error status.</returns>
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Check if email already exists
             var existingUser = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (existingUser != null)
                 return Conflict(new { message = "A user with this email already exists." });
 
-            // Hash the password
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
-            // Create the User
             var user = new User
             {
                 Email = dto.Email,
@@ -48,7 +55,6 @@ namespace RaceDay.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            // Create the role-specific profile
             if (dto.Role == "Organiser")
             {
                 var organiser = new Organiser
@@ -78,27 +84,31 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // POST: api/auth/login
+        /// <summary>
+        /// Authenticates a registered user and creates a session for them.
+        /// </summary>
+        /// <remarks>
+        /// On successful login, the user's ID, Role, Email, and FirstName are stored in the session.
+        /// </remarks>
+        /// <param name="dto">Login credentials (email and password).</param>
+        /// <returns>200 OK with user details, or 401 Unauthorized if credentials are invalid.</returns>
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Find the user by email
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (user == null)
                 return Unauthorized(new { message = "Invalid email or password." });
 
-            // Verify the password
             bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
 
             if (!isPasswordValid)
                 return Unauthorized(new { message = "Invalid email or password." });
 
-            // Save user info into session
             HttpContext.Session.SetInt32("UserID", user.UserID);
             HttpContext.Session.SetString("Email", user.Email);
             HttpContext.Session.SetString("Role", user.Role);
@@ -115,7 +125,10 @@ namespace RaceDay.API.Controllers
             });
         }
 
-        // POST: api/auth/logout
+        /// <summary>
+        /// Logs the current user out by clearing their session.
+        /// </summary>
+        /// <returns>200 OK confirming the logout.</returns>
         [HttpPost("logout")]
         public IActionResult Logout()
         {
