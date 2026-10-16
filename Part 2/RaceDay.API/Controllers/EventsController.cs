@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceDay.API.Data;
 using RaceDay.API.DTOs;
@@ -18,7 +18,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/events
-        // Any authenticated user (Organiser or Participant) can view all events
         [HttpGet]
         public async Task<IActionResult> GetAllEvents()
         {
@@ -27,6 +26,7 @@ namespace RaceDay.API.Controllers
                 return Unauthorized(new { message = "You must be logged in to view events." });
 
             var events = await _context.Events
+                .AsNoTracking()
                 .Include(e => e.Organiser)
                 .Select(e => new
                 {
@@ -46,7 +46,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/events/{id}
-        // Any authenticated user can view a single event
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEventById(int id)
         {
@@ -55,6 +54,7 @@ namespace RaceDay.API.Controllers
                 return Unauthorized(new { message = "You must be logged in to view events." });
 
             var evt = await _context.Events
+                .AsNoTracking()
                 .Include(e => e.Organiser)
                 .FirstOrDefaultAsync(e => e.EventID == id);
 
@@ -76,7 +76,6 @@ namespace RaceDay.API.Controllers
         }
 
         // POST: api/events
-        // Organiser only - creates a new event
         [HttpPost]
         public async Task<IActionResult> CreateEvent([FromBody] EventCreateDto dto)
         {
@@ -92,7 +91,6 @@ namespace RaceDay.API.Controllers
             if (role != "Organiser")
                 return StatusCode(403, new { message = "Only Organisers can create events." });
 
-            // Find the organiser profile linked to this user
             var organiser = await _context.Organisers
                 .FirstOrDefaultAsync(o => o.UserID == userId.Value);
 
@@ -123,7 +121,6 @@ namespace RaceDay.API.Controllers
         }
 
         // PUT: api/events/{id}
-        // Organiser only - can only update their own events
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] EventUpdateDto dto)
         {
@@ -139,7 +136,6 @@ namespace RaceDay.API.Controllers
             if (role != "Organiser")
                 return StatusCode(403, new { message = "Only Organisers can update events." });
 
-            // Get organiser profile
             var organiser = await _context.Organisers
                 .FirstOrDefaultAsync(o => o.UserID == userId.Value);
 
@@ -152,7 +148,6 @@ namespace RaceDay.API.Controllers
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
 
-            // Check the organiser owns this event
             if (evt.OrganiserID != organiser.OrganiserID)
                 return StatusCode(403, new { message = "You can only update events you created." });
 
@@ -169,7 +164,6 @@ namespace RaceDay.API.Controllers
         }
 
         // DELETE: api/events/{id}
-        // Organiser only - can only delete their own events
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
