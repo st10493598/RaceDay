@@ -18,7 +18,6 @@ namespace RaceDay.API.Controllers
         }
 
         // POST: api/events/{eventId}/results
-        // Organiser only - captures a result for a participant's enrolment
         [HttpPost("events/{eventId}/results")]
         public async Task<IActionResult> CreateResult(int eventId, [FromBody] ResultCreateDto dto)
         {
@@ -40,7 +39,6 @@ namespace RaceDay.API.Controllers
             if (organiser == null)
                 return NotFound(new { message = "Organiser profile not found." });
 
-            // Verify the event exists and belongs to this organiser
             var evt = await _context.Events
                 .FirstOrDefaultAsync(e => e.EventID == eventId);
 
@@ -50,7 +48,6 @@ namespace RaceDay.API.Controllers
             if (evt.OrganiserID != organiser.OrganiserID)
                 return StatusCode(403, new { message = "You can only capture results for your own events." });
 
-            // Verify the enrolment exists and belongs to this event
             var enrolment = await _context.Enrolments
                 .FirstOrDefaultAsync(e => e.EnrolmentID == dto.EnrolmentID);
 
@@ -60,7 +57,6 @@ namespace RaceDay.API.Controllers
             if (enrolment.EventID != eventId)
                 return BadRequest(new { message = "This enrolment does not belong to the selected event." });
 
-            // Check if a result already exists for this enrolment
             var existingResult = await _context.Results
                 .FirstOrDefaultAsync(r => r.EnrolmentID == dto.EnrolmentID);
 
@@ -90,7 +86,6 @@ namespace RaceDay.API.Controllers
         }
 
         // PUT: api/results/{id}
-        // Organiser only - updates a result for their own event
         [HttpPut("results/{id}")]
         public async Task<IActionResult> UpdateResult(int id, [FromBody] ResultUpdateDto dto)
         {
@@ -120,7 +115,6 @@ namespace RaceDay.API.Controllers
             if (result == null)
                 return NotFound(new { message = "Result not found." });
 
-            // Verify the organiser owns the event linked to this result
             if (result.Enrolment == null || result.Enrolment.Event == null
                 || result.Enrolment.Event.OrganiserID != organiser.OrganiserID)
                 return StatusCode(403, new { message = "You can only update results for your own events." });
@@ -137,7 +131,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/events/{eventId}/results
-        // Any authenticated user - leaderboard view
         [HttpGet("events/{eventId}/results")]
         public async Task<IActionResult> GetEventResults(int eventId)
         {
@@ -147,12 +140,14 @@ namespace RaceDay.API.Controllers
                 return Unauthorized(new { message = "You must be logged in." });
 
             var evt = await _context.Events
+                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.EventID == eventId);
 
             if (evt == null)
                 return NotFound(new { message = "Event not found." });
 
             var results = await _context.Results
+                .AsNoTracking()
                 .Include(r => r.Enrolment)
                     .ThenInclude(e => e!.Participant)
                         .ThenInclude(p => p!.User)
@@ -183,7 +178,6 @@ namespace RaceDay.API.Controllers
         }
 
         // GET: api/enrolments/{enrolmentId}/result
-        // Participant only - view their own result for a specific enrolment
         [HttpGet("enrolments/{enrolmentId}/result")]
         public async Task<IActionResult> GetMyResult(int enrolmentId)
         {
@@ -197,22 +191,24 @@ namespace RaceDay.API.Controllers
                 return StatusCode(403, new { message = "Only Participants can view their own results here." });
 
             var participant = await _context.Participants
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.UserID == userId.Value);
 
             if (participant == null)
                 return NotFound(new { message = "Participant profile not found." });
 
             var enrolment = await _context.Enrolments
+                .AsNoTracking()
                 .FirstOrDefaultAsync(e => e.EnrolmentID == enrolmentId);
 
             if (enrolment == null)
                 return NotFound(new { message = "Enrolment not found." });
 
-            // Verify this enrolment belongs to this participant
             if (enrolment.ParticipantID != participant.ParticipantID)
                 return StatusCode(403, new { message = "You can only view your own results." });
 
             var result = await _context.Results
+                .AsNoTracking()
                 .FirstOrDefaultAsync(r => r.EnrolmentID == enrolmentId);
 
             if (result == null)
@@ -231,4 +227,3 @@ namespace RaceDay.API.Controllers
         }
     }
 }
-
