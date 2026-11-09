@@ -296,6 +296,10 @@ RaceDay.API/
 └── RaceDay.API.slnx
 ```
 
+## Part 3 YouTube Video Demonstration Link
+
+https://youtu.be/3VSC2VyTtM0
+
 ## Part 3 Conclusion
 
 Part 3 expands RaceDay beyond REST API development by incorporating an MVC user interface, image storage, Docker configuration, and automated continuous integration. These additions improve the application's functionality, maintainability, and deployment readiness.
