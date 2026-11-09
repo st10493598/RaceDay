@@ -200,3 +200,102 @@ The RaceDay project demonstrates system planning, database design, and REST API 
 Part 1 focused on system planning, database documentation, API endpoint planning, and continuous integration.
 
 Part 2 focused on implementing the REST API, integrating the database, documenting endpoints, and testing the application.
+
+
+
+
+---
+
+# Part 3: MVC Application, Cloud Storage, Docker and Continuous Integration
+
+## Overview
+
+Part 3 extends the RaceDay Event Management System by introducing an ASP.NET Core MVC web application, image upload functionality, automated testing, Docker support, and a GitHub Actions CI workflow.
+
+## Technologies Used
+
+- ASP.NET Core MVC
+- ASP.NET Core Web API
+- C# and .NET 8
+- Entity Framework Core
+- SQL Server
+- Azure Blob Storage SDK
+- Azurite for local blob storage development
+- Docker
+- GitHub Actions
+- Automated testing
+
+## MVC Application
+
+The `RaceDayMVC` project provides a web-based interface for interacting with RaceDay functionality.
+
+The application supports Organiser and Participant workflows, including event-related management and user interaction.
+
+## Event Banner Upload
+
+Organisers can upload banner images for their events.
+
+The API includes an event banner upload endpoint:
+
+`POST /api/events/{id}/banner`
+
+The upload functionality includes organiser authentication and event ownership checks. Uploaded image URLs are stored with the corresponding event records.
+
+## Database Updates
+
+Entity Framework Core migrations support the additional functionality introduced in Part 3, including participant profile pictures and event banner images.
+
+## Automated Testing
+
+The `RaceDay.API.Tests` project contains automated tests for the RaceDay API.
+
+Tests can be executed using:
+
+```powershell
+dotnet test RaceDay.API.Tests/RaceDay.API.Tests.csproj --configuration Release
+```
+
+## GitHub Actions CI
+
+The Part 3 workflow is located at:
+
+`.github/workflows/part3-ci.yml`
+
+The workflow is configured to restore dependencies, build the test project, and execute automated tests using .NET 8.
+
+## Docker Support
+
+A Dockerfile is included in the API project to support containerising the RaceDay API.
+
+From the solution root, the Docker image can be built using:
+
+```powershell
+docker build -t raceday-api -f RaceDay.API/Dockerfile .
+```
+
+Docker Desktop must be running before executing this command.
+
+## Part 3 Project Structure
+
+```text
+RaceDay.API/
+├── .github/
+│   └── workflows/
+│       └── part3-ci.yml
+├── RaceDay.API/
+│   ├── Controllers/
+│   ├── Data/
+│   ├── DTOs/
+│   ├── Migrations/
+│   ├── Models/
+│   ├── Services/
+│   ├── Dockerfile
+│   └── Program.cs
+├── RaceDay.API.Tests/
+├── RaceDayMVC/
+└── RaceDay.API.slnx
+```
+
+## Part 3 Conclusion
+
+Part 3 expands RaceDay beyond REST API development by incorporating an MVC user interface, image storage, Docker configuration, and automated continuous integration. These additions improve the application's functionality, maintainability, and deployment readiness.
