@@ -1,0 +1,142 @@
+﻿@model RaceDayMVC.Models.ResultEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Race Result";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-3">
+        Edit Race Result
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <h5 class="card-title mb-3">
+                Participant: @Model.ParticipantName
+            </h5>
+
+            <p class="text-muted">
+                Update the participant's race result below.
+            </p>
+
+            <form asp-controller="Organiser"
+                  asp-action="EditResult"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       asp-for="ResultID" />
+
+                <input type="hidden"
+                       asp-for="EventId" />
+
+                <input type="hidden"
+                       asp-for="ParticipantName" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+                <!-- Finish Time -->
+                <div class="mb-3">
+                    <label asp-for="FinishTime"
+                           class="form-label">
+                        Finish Time (HH:MM:SS)
+                    </label>
+
+                    <input asp-for="FinishTime"
+                           type="text"
+                           class="form-control"
+                           placeholder="00:25:30" />
+
+                    <span asp-validation-for="FinishTime"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Chip Time -->
+                <div class="mb-3">
+                    <label asp-for="ChipTime"
+                           class="form-label">
+                        Chip Time (HH:MM:SS)
+                    </label>
+
+                    <input asp-for="ChipTime"
+                           type="text"
+                           class="form-control"
+                           placeholder="00:25:15" />
+
+                    <span asp-validation-for="ChipTime"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Finishing Position -->
+                <div class="mb-3">
+                    <label asp-for="FinishPosition"
+                           class="form-label">
+                        Finishing Position
+                    </label>
+
+                    <input asp-for="FinishPosition"
+                           type="number"
+                           min="1"
+                           class="form-control"
+                           placeholder="1" />
+
+                    <span asp-validation-for="FinishPosition"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Race Status -->
+                <div class="mb-3">
+                    <label asp-for="Status"
+                           class="form-label">
+                        Race Status
+                    </label>
+
+                    <select asp-for="Status"
+                            class="form-select">
+
+                        <option value="Finished">Finished</option>
+                        <option value="DNF">DNF - Did Not Finish</option>
+                        <option value="DNS">DNS - Did Not Start</option>
+
+                    </select>
+
+                    <span asp-validation-for="Status"
+                          class="text-danger">
+                    </span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-4">
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Save Changes
+                    </button>
+
+                    <a asp-controller="Organiser"
+                       asp-action="ManageResults"
+                       asp-route-eventId="@Model.EventId"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

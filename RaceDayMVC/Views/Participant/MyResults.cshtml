@@ -1,0 +1,153 @@
+﻿@model List<RaceDayMVC.Models.ParticipantResultViewModel>
+
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-3">
+        My Race Results
+    </h2>
+
+    <p class="text-muted">
+        View your race finishing times, positions
+        and results recorded by event organisers.
+    </p>
+
+    <div class="mb-3">
+        <a asp-controller="Participant"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+
+        <a asp-controller="Participant"
+           asp-action="MyEnrolments"
+           class="btn btn-primary">
+            My Enrolments
+        </a>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model == null || Model.Count == 0)
+    {
+        if (ViewBag.Error == null)
+        {
+            <div class="alert alert-info">
+                No race results are available yet.
+                Your results will appear here once
+                an organiser has recorded them.
+            </div>
+        }
+    }
+    else
+    {
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    My Results Summary
+                </h5>
+
+                <p class="mb-0">
+                    <strong>Total Recorded Results:</strong>
+                    @Model.Count
+                </p>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Event</th>
+                        <th>Event Date</th>
+                        <th>Category</th>
+                        <th>Finish Time</th>
+                        <th>Chip Time</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var result in Model)
+                    {
+                        <tr>
+                            <td>
+                                @result.EventName
+                            </td>
+
+                            <td>
+                                @if (result.EventDate.HasValue)
+                                {
+                                    @result.EventDate.Value.ToString("dd MMM yyyy")
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </td>
+
+                            <td>
+                                @result.CategoryName
+                            </td>
+
+                            <td>
+                                @if (result.FinishTime.HasValue)
+                                {
+                                    @result.FinishTime.Value.ToString(@"hh\:mm\:ss")
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (result.ChipTime.HasValue)
+                                {
+                                    @result.ChipTime.Value.ToString(@"hh\:mm\:ss")
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (result.FinishPosition.HasValue)
+                                {
+                                    @result.FinishPosition.Value
+                                }
+                                else
+                                {
+                                    <span>N/A</span>
+                                }
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary">
+                                    @result.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

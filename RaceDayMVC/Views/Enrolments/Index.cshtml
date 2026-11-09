@@ -1,0 +1,198 @@
+﻿@model List<RaceDayMVC.Models.EnrolmentViewModel>
+
+@{
+    ViewData["Title"] = "Manage Enrolments";
+    int eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+
+    <h2>Manage Event Enrolments</h2>
+
+    <p class="text-muted">
+        View participants registered for your RaceDay event
+        and manage their enrolment statuses.
+    </p>
+
+    <!-- Back to Events -->
+    <div class="mb-3">
+        <a asp-controller="Events"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Back to Events
+        </a>
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- Error Message -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- API Error -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+    else if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No participants have enrolled in this event yet.
+        </div>
+    }
+    else
+    {
+        <!-- Enrolment Summary -->
+        <div class="card mb-3">
+            <div class="card-body">
+
+                <h5 class="card-title">
+                    Enrolment Summary
+                </h5>
+
+                <p class="mb-0">
+                    <strong>Total Enrolments:</strong>
+                    @Model.Count
+                </p>
+
+            </div>
+        </div>
+
+        <!-- Enrolments Table -->
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered align-middle">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Enrolment ID</th>
+                        <th>Participant Name</th>
+                        <th>Email</th>
+                        <th>Category</th>
+                        <th>Enrolment Date</th>
+                        <th>Current Status</th>
+                        <th>Manage Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var enrolment in Model)
+                    {
+                        <tr>
+                            <td>
+                                @enrolment.EnrolmentId
+                            </td>
+
+                            <td>
+                                @enrolment.ParticipantFullName
+                            </td>
+
+                            <td>
+                                @enrolment.ParticipantEmail
+                            </td>
+
+                            <td>
+                                @enrolment.CategoryName
+                            </td>
+
+                            <td>
+                                @enrolment.EnrolmentDate.ToString(
+                                    "dd MMM yyyy")
+                            </td>
+
+                            <!-- Current Status -->
+                            <td>
+                                @if (enrolment.Status == "Confirmed")
+                                {
+                                    <span class="badge bg-success">
+                                        Confirmed
+                                    </span>
+                                }
+                                else if (enrolment.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+                                }
+                                else if (enrolment.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger">
+                                        Cancelled
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        @enrolment.Status
+                                    </span>
+                                }
+                            </td>
+
+                            <!-- Update Status Form -->
+                            <td>
+                                <form asp-controller="Enrolments"
+                                      asp-action="UpdateStatus"
+                                      method="post"
+                                      class="d-flex flex-wrap gap-2">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="enrolmentId"
+                                           value="@enrolment.EnrolmentId" />
+
+                                    <input type="hidden"
+                                           name="eventId"
+                                           value="@eventId" />
+
+                                    <select name="status"
+                                            class="form-select form-select-sm"
+                                            aria-label="Select enrolment status"
+                                            required>
+
+                                        <option value="Pending"
+                                                selected="@(enrolment.Status == "Pending")">
+                                            Pending
+                                        </option>
+
+                                        <option value="Confirmed"
+                                                selected="@(enrolment.Status == "Confirmed")">
+                                            Confirmed
+                                        </option>
+
+                                        <option value="Cancelled"
+                                                selected="@(enrolment.Status == "Cancelled")">
+                                            Cancelled
+                                        </option>
+
+                                    </select>
+
+                                    <button type="submit"
+                                            class="btn btn-primary btn-sm">
+                                        Update Status
+                                    </button>
+
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>

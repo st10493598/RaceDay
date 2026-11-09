@@ -1,0 +1,105 @@
+﻿@model List<RaceDayMVC.Models.EventViewModel>
+
+@{
+    ViewData["Title"] = "Browse Events";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-3">
+        Browse RaceDay Events
+    </h2>
+
+    <p class="text-muted">
+        Discover running, walking and cycling events.
+    </p>
+
+    <div class="mb-3">
+        <a asp-controller="Participant"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+    else if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No events are currently available.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+
+            @foreach (var evt in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <div class="card-body d-flex flex-column">
+
+                            <h5 class="card-title text-primary">
+                                @evt.EventName
+                            </h5>
+
+                            <p class="card-text">
+                                @evt.Description
+                            </p>
+
+                            <p>
+                                <strong>Date:</strong>
+                                @evt.EventDate.ToString("dd MMM yyyy")
+                            </p>
+
+                            <p>
+                                <strong>Location:</strong>
+                                @evt.Location
+                            </p>
+
+                            <p>
+                                <strong>Distance:</strong>
+                                @evt.Distance km
+                            </p>
+
+                            <p>
+                                <strong>Event Type:</strong>
+                                @evt.EventType
+                            </p>
+
+                            <div class="mt-auto">
+
+                                <a asp-controller="Participant"
+                                   asp-action="RegisterEvent"
+                                   asp-route-id="@evt.EventId"
+                                   class="btn btn-success w-100">
+                                    Register for Event
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>

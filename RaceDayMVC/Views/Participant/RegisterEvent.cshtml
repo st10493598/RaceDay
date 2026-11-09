@@ -1,0 +1,113 @@
+﻿@model RaceDayMVC.Models.ParticipantRegistrationViewModel
+
+@{
+    ViewData["Title"] = "Register for Event";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary">
+        Register for Event
+    </h2>
+
+    <p class="text-muted">
+        Select a race category to complete your registration.
+    </p>
+
+    <div class="mb-3">
+        <a asp-controller="Participant"
+           asp-action="BrowseEvents"
+           class="btn btn-secondary">
+            Back to Events
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body">
+
+            <h4 class="card-title">
+                @Model.EventName
+            </h4>
+
+            <hr />
+
+            @if (Model.Categories == null ||
+                 Model.Categories.Count == 0)
+            {
+                <div class="alert alert-warning">
+                    No categories are available for this event.
+                    Please try another event.
+                </div>
+            }
+            else
+            {
+                <form asp-controller="Participant"
+                      asp-action="RegisterEvent"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           asp-for="EventId" />
+
+                    <input type="hidden"
+                           asp-for="EventName" />
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="CategoryId"
+                               class="form-label">
+                            Select Race Category
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                class="form-select">
+
+                            <option value="0">
+                                -- Select a Category --
+                            </option>
+
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.CategoryId">
+                                    @category.CategoryName
+                                    @if (!string.IsNullOrWhiteSpace(
+                                        category.Description))
+                                    {
+                                        <text>
+                                            - @category.Description
+                                        </text>
+                                    }
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="CategoryId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Confirm Registration
+                    </button>
+
+                </form>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

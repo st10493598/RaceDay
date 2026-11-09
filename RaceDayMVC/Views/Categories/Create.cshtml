@@ -1,0 +1,69 @@
+﻿@model RaceDayMVC.Models.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="container mt-4">
+
+    <h2>Create Event Category</h2>
+
+    <p class="text-muted">
+        Add a new category to your RaceDay event.
+    </p>
+
+    <form asp-controller="Categories"
+          asp-action="Create"
+          asp-route-eventId="@Model.EventId"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="EventId" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="CategoryName"
+                   class="form-label"></label>
+
+            <input asp-for="CategoryName"
+                   class="form-control"
+                   maxlength="100" />
+
+            <span asp-validation-for="CategoryName"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description"
+                   class="form-label"></label>
+
+            <textarea asp-for="Description"
+                      class="form-control"
+                      maxlength="255"
+                      rows="3"></textarea>
+
+            <span asp-validation-for="Description"
+                  class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Category
+        </button>
+
+        <a asp-controller="Categories"
+           asp-action="Index"
+           asp-route-eventId="@Model.EventId"
+           class="btn btn-secondary">
+            Cancel
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

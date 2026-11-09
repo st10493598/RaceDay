@@ -1,0 +1,197 @@
+﻿@model RaceDayMVC.Models.ResultCaptureViewModel
+
+@{
+    ViewData["Title"] = "Capture Race Result";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-3">
+        Capture Race Result
+    </h2>
+
+    <p class="text-muted">
+        Record a participant's finishing time,
+        chip time, finishing position and race status.
+    </p>
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h5 class="card-title">
+                Event: @Model.EventName
+            </h5>
+
+            <p class="mb-0">
+                <strong>Event ID:</strong> @Model.EventId
+            </p>
+
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (Model.Enrolments == null || Model.Enrolments.Count == 0)
+    {
+        <div class="alert alert-info">
+            No participant enrolments are available for this event.
+        </div>
+    }
+    else if (ViewBag.Error == null)
+    {
+        <form asp-controller="Organiser"
+              asp-action="CaptureResult"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   asp-for="EventId" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="EnrolmentId"
+                       class="form-label">
+                    Select Participant
+                </label>
+
+                <select asp-for="EnrolmentId"
+                        class="form-select">
+
+                    <option value="0">
+                        -- Select Participant --
+                    </option>
+
+                    @foreach (var enrolment in Model.Enrolments)
+                    {
+                        <option value="@enrolment.EnrolmentId">
+                            @enrolment.ParticipantFullName -
+                            @enrolment.CategoryName
+                            (Enrolment #@enrolment.EnrolmentId)
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="EnrolmentId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FinishTime"
+                       class="form-label">
+                    Finish Time
+                </label>
+
+                <input asp-for="FinishTime"
+                       type="text"
+                       class="form-control"
+                       placeholder="00:25:30" />
+
+                <small class="text-muted">
+                    Format: HH:MM:SS (e.g. 00:25:30)
+                </small>
+
+                <span asp-validation-for="FinishTime"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ChipTime"
+                       class="form-label">
+                    Chip Time
+                </label>
+
+                <input asp-for="ChipTime"
+                       type="text"
+                       class="form-control"
+                       placeholder="00:25:15" />
+
+                <small class="text-muted">
+                    Format: HH:MM:SS (e.g. 00:25:15)
+                </small>
+
+                <span asp-validation-for="ChipTime"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FinishPosition"
+                       class="form-label">
+                    Finishing Position
+                </label>
+
+                <input asp-for="FinishPosition"
+                       type="number"
+                       min="1"
+                       class="form-control"
+                       placeholder="1" />
+
+                <span asp-validation-for="FinishPosition"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Status"
+                       class="form-label">
+                    Result Status
+                </label>
+
+                <select asp-for="Status"
+                        class="form-select">
+
+                    <option value="Finished">
+                        Finished
+                    </option>
+
+                    <option value="DNF">
+                        DNF - Did Not Finish
+                    </option>
+
+                    <option value="DNS">
+                        DNS - Did Not Start
+                    </option>
+
+                </select>
+
+                <span asp-validation-for="Status"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+
+                <button type="submit"
+                        class="btn btn-success">
+                    Save Race Result
+                </button>
+
+                <a asp-controller="Organiser"
+                   asp-action="Index"
+                   class="btn btn-secondary">
+                    Back to Dashboard
+                </a>
+
+            </div>
+
+        </form>
+    }
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

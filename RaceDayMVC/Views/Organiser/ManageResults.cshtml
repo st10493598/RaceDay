@@ -1,0 +1,142 @@
+﻿@model RaceDayMVC.Models.ResultManagementViewModel
+
+@{
+    ViewData["Title"] = "Manage Race Results";
+}
+
+<div class="container mt-4">
+
+    <h2 class="text-primary mb-3">
+        Manage Race Results
+    </h2>
+
+    <h5 class="mb-4">
+        Event: @Model.EventName
+    </h5>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+    else if (Model.Results == null || !Model.Results.Any())
+    {
+        <div class="alert alert-info">
+            No race results have been captured for this event yet.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-striped table-hover">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Participant</th>
+                        <th>Category</th>
+                        <th>Finish Time</th>
+                        <th>Chip Time</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var result in Model.Results)
+                    {
+                        <tr>
+                            <td>
+                                @result.ParticipantName
+                            </td>
+
+                            <td>
+                                @result.CategoryName
+                            </td>
+
+                            <td>
+                                @(result.FinishTime?.ToString(@"hh\:mm\:ss") ?? "-")
+                            </td>
+
+                            <td>
+                                @(result.ChipTime?.ToString(@"hh\:mm\:ss") ?? "-")
+                            </td>
+
+                            <td>
+                                @(result.FinishPosition?.ToString() ?? "-")
+                            </td>
+
+                            <td>
+                                @if (result.Status == "Finished")
+                                {
+                                    <span class="badge bg-success">
+                                        Finished
+                                    </span>
+                                }
+                                else if (result.Status == "DNF")
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        DNF
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        DNS
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <a asp-controller="Organiser"
+                                   asp-action="EditResult"
+                                   asp-route-eventId="@Model.EventId"
+                                   asp-route-resultId="@result.ResultID"
+                                   class="btn btn-sm btn-warning">
+                                    Edit Result
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+    <div class="mt-4">
+
+        <a asp-controller="Organiser"
+           asp-action="CaptureResult"
+           asp-route-eventId="@Model.EventId"
+           class="btn btn-success">
+            Capture Result
+        </a>
+
+        <a asp-controller="Events"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Back to Events
+        </a>
+
+        <a asp-controller="Organiser"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Dashboard
+        </a>
+
+    </div>
+
+</div>

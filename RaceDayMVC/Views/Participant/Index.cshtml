@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "Participant Dashboard";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h2 class="text-primary">
+                Welcome to RaceDay!
+            </h2>
+
+            <p class="text-muted">
+                Participant Dashboard
+            </p>
+
+            <p>
+                Discover running, walking and cycling events,
+                register for your favourite races,
+                and track your progress.
+            </p>
+
+        </div>
+    </div>
+
+    <h4 class="mb-3">
+        Participant Features
+    </h4>
+
+    <div class="row g-3">
+
+        <!-- Browse Events -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+
+                    <h5 class="card-title text-primary">
+                        Browse Events
+                    </h5>
+
+                    <p class="card-text">
+                        Explore available RaceDay events
+                        and choose a race category.
+                    </p>
+
+                    <div class="mt-auto">
+                        <a asp-controller="Participant"
+                           asp-action="BrowseEvents"
+                           class="btn btn-primary">
+                            Browse Events
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- My Enrolments -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+
+                    <h5 class="card-title text-primary">
+                        My Enrolments
+                    </h5>
+
+                    <p class="card-text">
+                        View the events you have registered for
+                        and check your enrolment status.
+                    </p>
+
+                    <div class="mt-auto">
+                        <a asp-controller="Participant"
+                           asp-action="MyEnrolments"
+                           class="btn btn-success">
+                            My Enrolments
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- My Results -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+
+                    <h5 class="card-title text-primary">
+                        My Results
+                    </h5>
+
+                    <p class="card-text">
+                        View your race results once organisers
+                        have recorded them.
+                    </p>
+
+                    <div class="mt-auto">
+                        <a asp-controller="Participant"
+                           asp-action="MyResults"
+                           class="btn btn-warning">
+                            My Results
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

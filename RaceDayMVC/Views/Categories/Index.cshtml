@@ -1,0 +1,122 @@
+﻿@model List<RaceDayMVC.Models.CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+    int eventId = ViewBag.EventId;
+}
+
+<div class="container mt-4">
+
+    <h2>Manage Event Categories</h2>
+
+    <p class="text-muted">
+        View and manage categories belonging to
+        the selected RaceDay event.
+    </p>
+
+    <!-- Navigation Buttons -->
+    <div class="mb-3 d-flex gap-2">
+
+        <a asp-controller="Events"
+           asp-action="Index"
+           class="btn btn-secondary">
+            Back to Events
+        </a>
+
+        <a asp-controller="Categories"
+           asp-action="Create"
+           asp-route-eventId="@eventId"
+           class="btn btn-primary">
+            + Create Category
+        </a>
+
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- Error Message -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- API Error Message -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+    else if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No categories have been created for this event yet.
+        </div>
+    }
+    else
+    {
+        <!-- Categories Table -->
+        <div class="table-responsive">
+
+            <table class="table table-striped table-bordered">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Category ID</th>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.CategoryId</td>
+
+                            <td>@category.CategoryName</td>
+
+                            <td>@category.Description</td>
+
+                            <td>
+                                <div class="d-flex gap-2">
+
+                                    <!-- Edit Category -->
+                                    <a asp-controller="Categories"
+                                       asp-action="Edit"
+                                       asp-route-id="@category.CategoryId"
+                                       asp-route-eventId="@eventId"
+                                       class="btn btn-warning btn-sm">
+                                        Edit
+                                    </a>
+
+                                    <!-- Delete Category -->
+                                    <a asp-controller="Categories"
+                                       asp-action="Delete"
+                                       asp-route-id="@category.CategoryId"
+                                       asp-route-eventId="@eventId"
+                                       class="btn btn-danger btn-sm">
+                                        Delete
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+
+</div>
